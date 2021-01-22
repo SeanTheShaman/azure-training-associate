@@ -24,11 +24,21 @@ namespace _
             }
         }
 
-        static async Task SendArticleAsync(string newsMessage)
+        static CloudQueue GetQueue()
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString); 
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient(); 
             CloudQueue queue  = queueClient.GetQueueReference("newsqueue");
+            return(queue); 
+        }
+        static async Task<string> ReceiveArticleAsync()
+        {
+
+        }
+
+        static async Task SendArticleAsync(string newsMessage)
+        {
+
             if(await queue.CreateIfNotExistsAsync())
             {
                 Console.WriteLine("Queue did not exist. Created queue."); 
