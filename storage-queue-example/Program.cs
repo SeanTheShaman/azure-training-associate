@@ -14,13 +14,18 @@ namespace _
         // Connection string - generated az storage account show-connection-string --name <name> --resource-group <resource_group>
         private const string connectionString = "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=seantheshamanstorage;AccountKey=RHERnYmxyeCXHdiY+k5ZfPwfrpq10OZJH58svKfbf5zTZtbQfYsCejDFSjU0bSIDAjc6c3Yh1pHJwwbM6Wm+Fg==";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             if(args.Length > 0)
             {
                 string value = String.Join(" ", args);
-                SendArticleAsync(value).Wait(); // Send the message and wait since async 
+                await SendArticleAsync(value); // Send the message and wait since async 
                 Console.WriteLine($"Sent: {value}"); 
+            }
+            else
+            {
+                string message = await ReceiveArticleAsync();
+                Console.WriteLine($"Message in the queue: {message}"); 
             }
             
         }
@@ -42,7 +47,7 @@ namespace _
 
                 if(message!=null)
                 {
-                    string retMessage = message.AsString(); 
+                    string retMessage = message.AsString; 
                     await queue.DeleteMessageAsync(message); 
                     return(retMessage);
                 }
@@ -56,7 +61,7 @@ namespace _
 
         static async Task SendArticleAsync(string newsMessage)
         {
-            queue = GetQueue(); 
+            CloudQueue queue = GetQueue(); 
             if(await queue.CreateIfNotExistsAsync())
             {
                 Console.WriteLine("Queue did not exist. Created queue."); 
