@@ -16,7 +16,12 @@ namespace _
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if(args.Length > 0)
+            {
+                string value = String.Join(" ", args);
+                SendArticleAsync(value).Wait(); // Send the message and wait since async 
+                Console.WriteLine($"Sent: {value}"); 
+            }
         }
 
         static async Task SendArticleAsync(string newsMessage)
@@ -34,3 +39,7 @@ namespace _
         }
     }
 }
+
+
+
+// az storage message peek --queue-name newsqueue --connection-string "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=seantheshamanstorage;AccountKey=RHERnYmxyeCXHdiY+k5ZfPwfrpq10OZJH58svKfbf5zTZtbQfYsCejDFSjU0bSIDAjc6c3Yh1pHJwwbM6Wm+Fg=="
