@@ -22,6 +22,7 @@ namespace _
                 SendArticleAsync(value).Wait(); // Send the message and wait since async 
                 Console.WriteLine($"Sent: {value}"); 
             }
+            
         }
 
         static CloudQueue GetQueue()
@@ -33,12 +34,29 @@ namespace _
         }
         static async Task<string> ReceiveArticleAsync()
         {
+            CloudQueue queue = GetQueue(); 
 
+            if(await queue.ExistsAsync())
+            {
+                CloudQueueMessage message = await queue.GetMessageAsync(); 
+
+                if(message!=null)
+                {
+                    string retMessage = message.AsString(); 
+                    await queue.DeleteMessageAsync(message); 
+                    return(retMessage);
+                }
+         
+
+
+            }
+
+            return("Queue does not exist or is empty!"); 
         }
 
         static async Task SendArticleAsync(string newsMessage)
         {
-
+            queue = GetQueue(); 
             if(await queue.CreateIfNotExistsAsync())
             {
                 Console.WriteLine("Queue did not exist. Created queue."); 
