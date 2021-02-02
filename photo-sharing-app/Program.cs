@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO; 
 using Microsoft.Extensions.Configuration; 
+using Azure.Storage.Blobs; 
 
 namespace photo_sharing_app
 {
@@ -12,6 +13,27 @@ namespace photo_sharing_app
             // Build the configuration from the appsettings.json: 
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json"); 
             var configuration = builder.Build(); 
+
+            var connectionString = configuration.GetConnectionString("StorageAccount"); 
+            string containerName = "photos"; 
+            BlobContainerClient container = new BlobContainerClient(connectionString, containerName); 
+
+            container.CreateIfNotExists(); 
+
+            // Upload the image 
+            string blobName = "docs-and-friends-selfie-stick"; 
+            string fileName = "docs-and-friends-selfie-stick.png"; 
+            BlobClient blobClient = container.GetBlobClient(blobName); 
+            blobClient.Upload(fileName, true); 
+
+            // List the images: 
+            var blobs = container.GetBlobs(); 
+            foreach(var blob in blobs)
+            {
+                Console.WriteLine($"{blob.Name} -> Created on: {blob.Properties.CreatedOn:yyyy-MM-dd HH:mm:ss} Size: {blob.Properties.ContentLength}"); 
+            }
+        
+            // 
         }
 
         
