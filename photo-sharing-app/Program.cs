@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO; 
+using Microsoft.Extensions.Configuration; 
 
 namespace photo_sharing_app
 {
@@ -6,7 +8,12 @@ namespace photo_sharing_app
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
+            // Build the configuration from the appsettings.json: 
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json"); 
+            var configuration = builder.Build(); 
         }
+
+        
     }
 }
